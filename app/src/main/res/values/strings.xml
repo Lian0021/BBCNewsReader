@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">BBCNewsReader</string>
+    <string name="app_name">BBC News Reader</string>
+    <string name="open">Open</string>
+    <string name="close">Closed</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="action_favorite_clicked">You clicked item \'action_favorite\'.</string>
+    <string name="dia_title">Deletion Confirmation</string>
+    <string name="dia_message">Do you want to remove the favourite?</string>
+    <string name="delete_from_favourites">The news was deleted from favourites.</string>
+    <string name="add_to_favourites">The news was added to favourites.</string>
+    <string name="num_favourites">The number of favourites: </string>
+    <string name="invalid_rss_url">Invalid Rss feed URL</string>
 </resources>

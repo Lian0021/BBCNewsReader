@@ -5,15 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".FavouritesActivity">
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/red"
         app:titleTextColor="@android:color/white"
-        android:id="@+id/toolbar_home" />
+        android:id="@+id/toolbar_favourites" />
+    <TextView
+        android:id="@+id/txtFavouritesHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:textSize="20dp"
+        android:text="@string/num_favourites" />
     <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawer_layout_home"
+        android:id="@+id/drawer_layout_favourites"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:openDrawer="start">
@@ -22,13 +29,12 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:menu="@menu/navigation_menu_items_home"
-            android:id="@+id/nav_view_home"/>
-        <ListView
-            android:id="@+id/listviewNews"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            app:menu="@menu/navigation_menu_items_favourites"
+            android:id="@+id/nav_view_favourites"/>
+            <ListView
+                android:id="@+id/listviewFavourites"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>
