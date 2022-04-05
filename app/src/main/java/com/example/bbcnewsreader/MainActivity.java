@@ -86,7 +86,8 @@ public class MainActivity extends AppCompatActivity
             NewsListItems newsListItem = (NewsListItems) newsListAdapter.getItem(pos);
             TextView txtFavouritestate = (TextView) findViewById(R.id.news_favouritestate);
             String favouritestate;
-            favouritestate = txtFavouritestate.getText().toString();
+            //favouritestate = txtFavouritestate.getText().toString();
+            favouritestate = newsListItem.getState();
 
             if(favouritestate.equals("0")) {
                 // Not a favourite
