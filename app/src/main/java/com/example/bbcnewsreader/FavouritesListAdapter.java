@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import com.example.bbcnewsreader.R;
-
 import java.util.ArrayList;
 
 public class FavouritesListAdapter extends BaseAdapter {
@@ -90,6 +87,7 @@ public class FavouritesListAdapter extends BaseAdapter {
     }
 
 
+    // view holder
     private static class ViewHolder {
         TextView txtLink;
         TextView txtGuid;

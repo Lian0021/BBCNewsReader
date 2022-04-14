@@ -1,8 +1,29 @@
 <resources>
     <string name="app_name">BBC News Reader</string>
+    <string name="version">V1.0</string>
+    <string name="home">BBC News Feeds</string>
+    <string name="my_favourite">My Favourites</string>
+    <string name="news_details">News Details</string>
+    <string name="exit">Exit</string>
+    <string name="help">Help</string>
+    <string name="help_dia_title">Instructions</string>
+    <string name="help_home_dia_message1">1. Click each row to view news details;</string>
+    <string name="help_home_dia_message2">\n2. Long click each row to add/remove news to / from favourites.</string>
+    <string name="help_home_dia_message3">\n3. Select "My Favourites" from navigation menu to view favourites;</string>
+    <string name="help_home_dia_message4">\n4. Select "Exit" from navigation menu to exit the app.</string>
+    <string name="toolbar_favourite">Favourite</string>
+    <string name="help_details_dia_message1">(1) Click back button on toolbar to return to previous page;</string>
+    <string name="help_details_dia_message2">\n(2) Click star on toolbar to add/remove the news to/from favourites;</string>
+    <string name="help_details_dia_message3">\n(3) Click the link at bottom to view the news on web browser.</string>
+    <string name="help_favourites_dia_message1">1. Click each row to view news details;</string>
+    <string name="help_favourites_dia_message2">\n2. Long click each row to remove news from favourites.</string>
+    <string name="help_favourites_dia_message3">\n3. To filter favourites list, enter text and then click "FILTER" button;</string>
+    <string name="help_favourites_dia_message4">\n4. Select "Home - BBC News" from navigation menu to get recent BBC news feed;</string>
+    <string name="help_favourites_dia_message5">\n5. Select "Exit" from navigation menu to exit the app.</string>
     <string name="open">Open</string>
-    <string name="close">Closed</string>
+    <string name="close">Close</string>
     <string name="yes">Yes</string>
+    <string name="ok">OK</string>
     <string name="no">No</string>
     <string name="action_favorite_clicked">You clicked item \'action_favorite\'.</string>
     <string name="dia_title">Deletion Confirmation</string>
@@ -11,4 +32,6 @@
     <string name="add_to_favourites">The news was added to favourites.</string>
     <string name="num_favourites">The number of favourites: </string>
     <string name="invalid_rss_url">Invalid Rss feed URL</string>
+    <string name="hint_eddittext">Enter text</string>
+    <string name="link_desc">To view the news, click the link: </string>
 </resources>

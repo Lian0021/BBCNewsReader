@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">lecteur de nouvelles de la BBC</string>
+    <string name="version">V1.0</string>
+    <string name="home">Accueil - Nouvelles de la BBC</string>
+    <string name="my_favourite">Mes favoris</string>
+    <string name="news_details">Détails de l\'actualité</string>
+    <string name="exit">Quitter</string>
+    <string name="help">Aider</string>
+    <string name="help_dia_title">Des instructions</string>
+    <string name="help_home_dia_message1">1. Cliquez sur chaque ligne pour afficher les détails de l\'actualité ; </string>
+    <string name="help_home_dia_message2">\n2. Cliquez longuement sur chaque ligne pour ajouter/supprimer des nouvelles aux/des favoris.</string>
+    <string name="help_home_dia_message3">\n3. Sélectionnez «Mes favoris» dans le menu de navigation pour afficher les favoris;</string>
+    <string name="help_home_dia_message4">\n4. Sélectionnez "Quitter" dans le menu de navigation pour quitter l\'application.</string>
+    <string name="toolbar_favourite">Préférée</string>
+    <string name="help_details_dia_message1">(1) Cliquez sur le bouton de retour de la barre d\'outils pour revenir à la page précédente ;</string>
+    <string name="help_details_dia_message2">\n(2) Cliquez sur l\'étoile dans la barre d\'outils pour ajouter/supprimer les nouvelles aux/des favoris;</string>
+    <string name="help_details_dia_message3">\n(3) Cliquez sur le lien en bas pour afficher les nouvelles sur le navigateur Web.</string>
+    <string name="help_favourites_dia_message1">1. Cliquez sur chaque ligne pour afficher les détails de l\'actualité ;</string>
+    <string name="help_favourites_dia_message2">\n2. Cliquez longuement sur chaque ligne pour supprimer les nouvelles des favoris;</string>
+    <string name="help_favourites_dia_message3">\n3. Pour filtrer la liste des favoris, saisissez du texte, puis cliquez sur le bouton "FILTRER" ;</string>
+    <string name="help_favourites_dia_message4">\n4. Sélectionnez "Accueil - BBC News" dans le menu de navigation pour obtenir les dernières actualités de la BBC ;</string>
+    <string name="help_favourites_dia_message5">\n5. Sélectionnez "Quitter" dans le menu de navigation pour quitter l\'application.</string>
+    <string name="open">Ouvrir</string>
+    <string name="close">Fermer</string>
+    <string name="yes">Oui</string>
+    <string name="ok">D\'ACCORD</string>
+    <string name="no">Non</string>
+    <string name="action_favorite_clicked">Vous avez cliqué sur l\'élément \'action_favorite\'.</string>
+    <string name="dia_title">Confirmation de suppression</string>
+    <string name="dia_message">Voulez-vous supprimer le favori ?</string>
+    <string name="delete_from_favourites">La nouvelle a été supprimée des favoris.</string>
+    <string name="add_to_favourites">La nouvelle a été ajoutée aux favoris.</string>
+    <string name="num_favourites">Le nombre de favoris : </string>
+    <string name="invalid_rss_url">URL de flux RSS non valide</string>
+    <string name="hint_eddittext">Entrez du texte</string>
+    <string name="link_desc">Pour voir l\'actualité, cliquez sur le lien : </string>
+</resources>

@@ -25,7 +25,7 @@
         android:orientation="horizontal">
         <EditText
             android:id="@+id/eddittext"
-            android:layout_width="275dp"
+            android:layout_width="500dp"
             android:layout_height="wrap_content"
             android:hint="@string/hint_eddittext" />
         <Button
@@ -47,10 +47,21 @@
             android:fitsSystemWindows="true"
             app:menu="@menu/navigation_menu_items_favourites"
             android:id="@+id/nav_view_favourites"/>
-        <ListView
-            android:id="@+id/listviewFavourites"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:orientation="vertical">
+            <ListView
+                    android:id="@+id/listviewFavourites"
+                    android:layout_width="300dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            <FrameLayout
+                android:id="@+id/news_details_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/listviewFavourites">
+            </FrameLayout>
+        </RelativeLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>

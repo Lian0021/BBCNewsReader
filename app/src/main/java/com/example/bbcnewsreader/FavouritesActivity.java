@@ -1,5 +1,6 @@
 package com.example.bbcnewsreader;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,22 +8,28 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 
 public class FavouritesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ListView listViewFavourites;
+    private EditText eddittext;
+    private Button buttonfilter;
     private FavouritesListAdapter favouritesListAdapter;
     private ArrayList<FavouritesListItems> favouritesListItems = new ArrayList<FavouritesListItems>();
 
@@ -34,9 +41,16 @@ public class FavouritesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites);
 
+        eddittext = (EditText) findViewById(R.id.eddittext);
+        buttonfilter = (Button) findViewById(R.id.buttonfilter);
+
         //For toolbar:
         Toolbar tBar = findViewById(R.id.toolbar_favourites);
         setSupportActionBar(tBar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.app_name) + " " + getString(R.string.version));
+        actionBar.setSubtitle(Html.fromHtml("<font color='#FFBF00'>" + getString(R.string.my_favourite) + "</font>"));
 
         //For NavigationDrawer:
         DrawerLayout drawer = findViewById(R.id.drawer_layout_favourites);
@@ -59,22 +73,73 @@ public class FavouritesActivity extends AppCompatActivity
         dbHelper = new SqlDbHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        loadDataFromDB();
+        SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String s1 = sh.getString("text", "");
+        eddittext.setText(s1);
+
+        loadDataFromDB(s1);
+
+        buttonfilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = eddittext.getText().toString();
+
+                if (text.isEmpty()) {
+                    listViewFavourites.setAdapter(null);
+                    favouritesListAdapter = new FavouritesListAdapter(
+                            FavouritesActivity.this, favouritesListItems);
+                    listViewFavourites.setAdapter(favouritesListAdapter);
+
+                    loadDataFromDB("");
+                }
+                else {
+                    listViewFavourites.setAdapter(null);
+                    favouritesListAdapter = new FavouritesListAdapter(
+                            FavouritesActivity.this, favouritesListItems);
+                    listViewFavourites.setAdapter(favouritesListAdapter);
+
+                    loadDataFromDB(text);
+                }
+            }
+        });
+
 
         listViewFavourites.setOnItemClickListener((p, b, pos, id) -> {
             FavouritesListItems favouritesListItem = (FavouritesListItems) favouritesListAdapter.getItem(pos);
-            Intent intent = new Intent(this, NewsDetailsActivity.class);
-            Bundle bundle = new Bundle();
 
-            bundle.putString("TITLE_TEXT", favouritesListItem.getTitle());
-            bundle.putString("DESCRIPTION_TEXT", favouritesListItem.getDescription());
-            bundle.putString("LINK_TEXT", favouritesListItem.getLink());
-            bundle.putString("GUID_TEXT", favouritesListItem.getGuid());
-            bundle.putString("PUBDATE_TEXT", favouritesListItem.getPubdate());
-            bundle.putString("FAVOURITESTATE_TEXT", "1");
-            intent.putExtras(bundle);
-            //startActivity(intent);
-            startActivityForResult(intent, 1);
+            View frameLayoutView = (View)findViewById(R.id.news_details_container);
+
+            if(frameLayoutView == null) {
+                // on phone
+                Intent intent = new Intent(this, NewsDetailsActivity.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putString("TITLE_TEXT", favouritesListItem.getTitle());
+                bundle.putString("DESCRIPTION_TEXT", favouritesListItem.getDescription());
+                bundle.putString("LINK_TEXT", favouritesListItem.getLink());
+                bundle.putString("GUID_TEXT", favouritesListItem.getGuid());
+                bundle.putString("PUBDATE_TEXT", favouritesListItem.getPubdate());
+                bundle.putString("FAVOURITESTATE_TEXT", "1");
+                intent.putExtras(bundle);
+                //startActivity(intent);
+                startActivityForResult(intent, 1);
+            }
+            else {
+                // on tablet
+                Bundle bundle = new Bundle();
+                bundle.putString("TITLE_TEXT", favouritesListItem.getTitle());
+                bundle.putString("DESCRIPTION_TEXT", favouritesListItem.getDescription());
+                bundle.putString("LINK_TEXT", favouritesListItem.getLink());
+                bundle.putString("GUID_TEXT", favouritesListItem.getGuid());
+                bundle.putString("PUBDATE_TEXT", favouritesListItem.getPubdate());
+                bundle.putString("FAVOURITESTATE_TEXT", "1");
+
+                DetailsFragment dFragment = new DetailsFragment();
+                dFragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.news_details_container, dFragment)
+                        .commit();
+            }
         });
 
         listViewFavourites.setOnItemLongClickListener((p, b, pos, id) -> {
@@ -108,14 +173,24 @@ public class FavouritesActivity extends AppCompatActivity
     }
 
 
-    private void loadDataFromDB() {
+    private void loadDataFromDB(String text) {
+        favouritesListItems.clear();
+
         String[] columns = {SqlDbHelper.COL_ID, SqlDbHelper.COL_TITLE, SqlDbHelper.COL_DESCRIPTION,
                             SqlDbHelper.COL_LINK, SqlDbHelper.COL_GUID, SqlDbHelper.COL_PUBDATE};
+        String selection;
+        if(text.isEmpty()) {
+            selection = null;
+        }
+        else {
+            selection = SqlDbHelper.COL_TITLE + " like '%" + text + "%'";
+        }
+
         Cursor cursor = db.query(SqlDbHelper.TABLE_NAME, columns,
-                null, null, null, null, SqlDbHelper.COL_ID + " desc");
+                selection, null, null, null, SqlDbHelper.COL_ID + " desc");
 
         TextView txtFavouritesHeader = (TextView) findViewById(R.id.txtFavouritesHeader);
-        txtFavouritesHeader.setText( "Number of Favourites : " + cursor.getCount());
+        txtFavouritesHeader.setText( getString(R.string.num_favourites) + cursor.getCount());
 
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -167,8 +242,8 @@ public class FavouritesActivity extends AppCompatActivity
         //getMenuInflater().inflate(R.menu.main, menu);
 
         // Inflate the menu items for use in the action bar
-        // MenuInflater inflater = getMenuInflater();
-        // inflater.inflate(R.menu.toolbar_menu_items_favourites, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu_items_favourites, menu);
 
         return true;
     }
@@ -184,6 +259,20 @@ public class FavouritesActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.action_favorite:
                 message = getResources().getString(R.string.action_favorite_clicked);
+                break;
+
+            case R.id.help_favourites:
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder (this);
+                alertDialogBuilder.setTitle(getString(R.string.help_dia_title));
+                alertDialogBuilder.setMessage(getString(R.string.help_favourites_dia_message1) +
+                        getString(R.string.help_favourites_dia_message2) +
+                        getString(R.string.help_favourites_dia_message3) +
+                        getString(R.string.help_favourites_dia_message4) +
+                        getString(R.string.help_favourites_dia_message5));
+
+                alertDialogBuilder.setPositiveButton(getString(R.string.ok), (click, arg) -> {});
+                alertDialogBuilder.create().show();
+
                 break;
         }
 
@@ -215,5 +304,26 @@ public class FavouritesActivity extends AppCompatActivity
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    // Fetch the stored data in onResume()
+    // Because this is what will be called
+    // when the app opens again
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String s1 = sh.getString("text", "");
+        eddittext.setText(s1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putString("text", eddittext.getText().toString());
+        myEdit.apply();
     }
 }

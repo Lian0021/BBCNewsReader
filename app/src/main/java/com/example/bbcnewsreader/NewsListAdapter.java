@@ -9,11 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import com.example.bbcnewsreader.NewsListItems;
-import com.example.bbcnewsreader.R;
-import com.example.bbcnewsreader.SqlDbHelper;
-
 import java.util.ArrayList;
 
 public class NewsListAdapter extends BaseAdapter {

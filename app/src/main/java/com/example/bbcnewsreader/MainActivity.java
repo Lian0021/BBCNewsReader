@@ -1,6 +1,8 @@
 package com.example.bbcnewsreader;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -11,22 +13,35 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.util.Xml;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xmlpull.v1.XmlPullParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    ProgressBar progressBar;
     private ListView listViewNews;
     private NewsListAdapter newsListAdapter;
     private ArrayList<NewsListItems> newsListItems = new ArrayList<NewsListItems>();
@@ -39,9 +54,17 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setMax(100);
+        progressBar.setProgress(0);
+
         //For toolbar:
         Toolbar tBar = findViewById(R.id.toolbar_home);
         setSupportActionBar(tBar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.app_name) + " " + getString(R.string.version));
+        actionBar.setSubtitle(Html.fromHtml("<font color='#FFBF00'>" + getString(R.string.home) + "</font>"));
 
         //For NavigationDrawer:
         DrawerLayout drawer = findViewById(R.id.drawer_layout_home);
@@ -67,19 +90,40 @@ public class MainActivity extends AppCompatActivity
         listViewNews.setOnItemClickListener((p, b, pos, id) -> {
             NewsListItems newsListItem = (NewsListItems) newsListAdapter.getItem(pos);
 
-            Intent intent = new Intent(this, NewsDetailsActivity.class);
-            Bundle bundle = new Bundle();
+            View frameLayoutView = (View)findViewById(R.id.news_details_container);
 
-            bundle.putString("TITLE_TEXT", newsListItem.getTitle());
-            bundle.putString("DESCRIPTION_TEXT", newsListItem.getDescription());
-            bundle.putString("LINK_TEXT", newsListItem.getLink());
-            bundle.putString("GUID_TEXT", newsListItem.getGuid());
-            bundle.putString("PUBDATE_TEXT", newsListItem.getPubdate());
+            if(frameLayoutView == null) {
+                // on phone
+                Intent intent = new Intent(this, NewsDetailsActivity.class);
+                Bundle bundle = new Bundle();
 
-            bundle.putString("FAVOURITESTATE_TEXT", newsListItem.getState());
-            intent.putExtras(bundle);
-            //startActivity(intent);
-            startActivityForResult(intent, 1);
+                bundle.putString("TITLE_TEXT", newsListItem.getTitle());
+                bundle.putString("DESCRIPTION_TEXT", newsListItem.getDescription());
+                bundle.putString("LINK_TEXT", newsListItem.getLink());
+                bundle.putString("GUID_TEXT", newsListItem.getGuid());
+                bundle.putString("PUBDATE_TEXT", newsListItem.getPubdate());
+                bundle.putString("FAVOURITESTATE_TEXT", newsListItem.getState());
+
+                intent.putExtras(bundle);
+                //startActivity(intent);
+                startActivityForResult(intent, 1);
+            }
+            else {
+                // on tablet
+                Bundle bundle = new Bundle();
+                bundle.putString("TITLE_TEXT", newsListItem.getTitle());
+                bundle.putString("DESCRIPTION_TEXT", newsListItem.getDescription());
+                bundle.putString("LINK_TEXT", newsListItem.getLink());
+                bundle.putString("GUID_TEXT", newsListItem.getGuid());
+                bundle.putString("PUBDATE_TEXT", newsListItem.getPubdate());
+                bundle.putString("FAVOURITESTATE_TEXT", newsListItem.getState());
+
+                DetailsFragment dFragment = new DetailsFragment();
+                dFragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.news_details_container, dFragment)
+                        .commit();
+            }
         });
 
         listViewNews.setOnItemLongClickListener((p, b, pos, id) -> {
@@ -135,28 +179,45 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
-        private String urlLink;
+    private class FetchFeedTask extends AsyncTask<Void, Integer, Boolean> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressBar.setProgress(0);
+            progressBar.setVisibility(View.VISIBLE);
         }
 
 
         @Override
-        protected void onProgressUpdate(Void... voids) {
-            super.onProgressUpdate(voids);
+        protected void onProgressUpdate(Integer... args) {
+            super.onProgressUpdate(args);
+            // update progressBar
+            progressBar.setProgress(args[0]);
+
         }
 
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+            int totalitems = 0;
+            int counter = 0;
+
             String urlLink = "http://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml";
 
             XmlPullParser parser = Xml.newPullParser();
             InputStream stream = null;
             try {
+
+                URL url = new URL(urlLink);
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(new InputSource(url.openStream()));
+                doc.getDocumentElement().normalize();
+
+                NodeList nodeList = doc.getElementsByTagName("item");
+                totalitems = nodeList.getLength();
+
                 stream = new URL(urlLink).openConnection().getInputStream();
                 parser.setInput(stream, null);
                 int eventType = parser.getEventType();
@@ -171,23 +232,21 @@ public class MainActivity extends AppCompatActivity
                         case XmlPullParser.START_TAG:
                             name = parser.getName();
                             if (name.equalsIgnoreCase("item")) {
-                                Log.i("new item", "Create new item");
                                 newsListItem = new NewsListItems();
+                                counter++;
+                                publishProgress((int) ((counter * 100) / totalitems));
+                                Thread.sleep(45);
+
                             } else if (newsListItem != null) {
                                 if (name.equalsIgnoreCase("link")) {
-                                    Log.i("Attribute", "setLink");
                                     newsListItem.setLink(parser.nextText());
                                 } else if (name.equalsIgnoreCase("description")) {
-                                    Log.i("Attribute", "description");
                                     newsListItem.setDescription(parser.nextText().trim());
                                 } else if (name.equalsIgnoreCase("pubDate")) {
-                                    Log.i("Attribute", "date");
                                     newsListItem.setPubdate(parser.nextText());
                                 } else if (name.equalsIgnoreCase("title")) {
-                                    Log.i("Attribute", "title");
                                     newsListItem.setTitle(parser.nextText().trim());
                                 } else if (name.equalsIgnoreCase("guid")) {
-                                    Log.i("Attribute", "title");
                                     newsListItem.setGuid(parser.nextText().trim());
                                 }
                             }
@@ -195,9 +254,7 @@ public class MainActivity extends AppCompatActivity
                             break;
                         case XmlPullParser.END_TAG:
                             name = parser.getName();
-                            Log.i("End tag", name);
                             if (name.equalsIgnoreCase("item") && newsListItem != null) {
-                                Log.i("Added", newsListItem.toString());
                                 newsListItem.setState("0");
                                 newsListItems.add(newsListItem);
                             } else if (name.equalsIgnoreCase("channel")) {
@@ -222,6 +279,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+
         public InputStream getInputStream(URL url) {
             try{
                 return url.openConnection().getInputStream();
@@ -235,9 +293,21 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean success) {
+            progressBar.setVisibility(View.INVISIBLE);
             if (success) {
                 newsListAdapter = new NewsListAdapter(MainActivity.this, newsListItems);
                 listViewNews.setAdapter(newsListAdapter);
+                View parentLayout = findViewById(android.R.id.content);
+
+                Snackbar.make(parentLayout, "Total news:" + newsListItems.size(), Snackbar.LENGTH_INDEFINITE)
+                        .setDuration(30000)
+                        .setAction("Close", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Nothing to do but close the Snackbar
+                            }
+                        })
+                        .show();
             } else {
                 // Invalid Rss feed URL
                 Toast.makeText(MainActivity.this, getString(R.string.invalid_rss_url), Toast.LENGTH_LONG).show();
@@ -268,8 +338,8 @@ public class MainActivity extends AppCompatActivity
         //getMenuInflater().inflate(R.menu.main, menu);
 
         // Inflate the menu items for use in the action bar
-        //MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.toolbar_menu_items_home, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu_items_home, menu);
 
         return true;
     }
@@ -280,15 +350,21 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        String message = "";
 
         switch (item.getItemId()) {
-            case R.id.action_favorite:
-                message = getResources().getString(R.string.action_favorite_clicked);
+            case R.id.help_home:
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder (this);
+                alertDialogBuilder.setTitle(getString(R.string.help_dia_title));
+                alertDialogBuilder.setMessage(getString(R.string.help_home_dia_message1) +
+                        getString(R.string.help_home_dia_message2) +
+                        getString(R.string.help_home_dia_message3) +
+                        getString(R.string.help_home_dia_message4));
+
+                alertDialogBuilder.setPositiveButton(getString(R.string.ok), (click, arg) -> {});
+                alertDialogBuilder.create().show();
+
                 break;
         }
-
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 
         return true;
         //return super.onOptionsItemSelected(item);
@@ -306,7 +382,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.item_exit_home:
-                finishAffinity(); // Close all activites
+                finishAffinity(); // Close all activities
                 System.exit(0);  // Releasing resources
                 break;
         }

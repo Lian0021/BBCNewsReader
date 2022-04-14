@@ -3,9 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout-sw720dp/activity_main.xml" value="0.11065573770491803" />
         <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout/activity_favourites.xml" value="0.1" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout/activity_favourites_details.xml" value="0.14673913043478262" />
         <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout/activity_main.xml" value="0.15625" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout/activity_news_details.xml" value="0.14673913043478262" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout/favourite_item_list_row.xml" value="0.14673913043478262" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout/fragment_details.xml" value="0.14673913043478262" />
         <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/layout/rss_item_list_row.xml" value="0.15625" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/menu/navigation_menu_items_favourites.xml" value="0.14074074074074075" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/menu/navigation_menu_items_home.xml" value="0.14074074074074075" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/menu/toolbar_menu_items_favourites.xml" value="0.14074074074074075" />
+        <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/menu/toolbar_menu_items_favouritesdetails.xml" value="0.14074074074074075" />
         <entry key="..\:/Users/julia/AndroidStudioProjects/BBCNewsReader/app/src/main/res/menu/toolbar_menu_items_home.xml" value="0.1" />
       </map>
     </option>

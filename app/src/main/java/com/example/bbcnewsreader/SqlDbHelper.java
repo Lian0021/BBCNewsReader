@@ -20,6 +20,7 @@ public class SqlDbHelper extends SQLiteOpenHelper {
         super(context, SqlDbHelper, null, VERSION_NUM);
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SCRIPT_CREATE_DATABASE = "create table "

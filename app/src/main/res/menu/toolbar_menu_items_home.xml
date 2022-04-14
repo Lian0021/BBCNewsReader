@@ -2,8 +2,8 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:icon="@drawable/star_favourite"
-        android:id="@+id/action_favorite"
-        android:title="Favorite"
-        app:showAsAction="ifRoom"/>
+    <item android:icon="@drawable/question_mark"
+        android:id="@+id/help_home"
+        android:title="@string/help"
+        app:showAsAction="ifRoom" />
 </menu>

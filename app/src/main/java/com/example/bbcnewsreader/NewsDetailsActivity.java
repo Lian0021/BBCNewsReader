@@ -1,5 +1,7 @@
 package com.example.bbcnewsreader;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.content.ContentValues;
@@ -17,9 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.bbcnewsreader.R;
-import com.example.bbcnewsreader.SqlDbHelper;
 
 public class NewsDetailsActivity extends AppCompatActivity {
     String state;
@@ -40,6 +39,10 @@ public class NewsDetailsActivity extends AppCompatActivity {
         setSupportActionBar(tBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+       
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.app_name) + " " + getString(R.string.version));
+        actionBar.setSubtitle(Html.fromHtml("<font color='#FFBF00'>" + getString(R.string.news_details) + "</font>"));
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -56,11 +59,10 @@ public class NewsDetailsActivity extends AppCompatActivity {
         TextView textviewPubdate_Text = (TextView) findViewById(R.id.news_detail_pubdate);
         textviewPubdate_Text.setText(pubdate_text);
 
-        // todo: link format
         String link_text = bundle.getString("LINK_TEXT");
         String link;
-        // todo
-        link = "To view the news, click the link: <br /><a href='" + link_text + "'>" + title_text + "</a>";
+        link = getString(R.string.link_desc) +  "<br />" +
+                "<a href='" + link_text + "'>" + title_text + "</a>";
         Spanned Text = Html.fromHtml(link, Html.FROM_HTML_MODE_LEGACY);
         TextView textviewLink_Text = (TextView) findViewById(R.id.news_detail_link);
         textviewLink_Text.setMovementMethod(LinkMovementMethod.getInstance());
@@ -159,6 +161,17 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 }
 
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+                break;
+            case R.id.help_details:
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder (this);
+                alertDialogBuilder.setTitle(getString(R.string.help_dia_title));
+                alertDialogBuilder.setMessage(getString(R.string.help_details_dia_message1) +
+                        getString(R.string.help_details_dia_message2) +
+                        getString(R.string.help_details_dia_message3));
+
+                alertDialogBuilder.setPositiveButton(getString(R.string.ok), (click, arg) -> {});
+                alertDialogBuilder.create().show();
 
                 break;
         }

@@ -42,10 +42,21 @@
                 android:progress="50"
                 android:visibility="visible" />
         </LinearLayout>
-        <ListView
-            android:id="@+id/listviewNews"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:orientation="vertical">
+            <ListView
+                android:id="@+id/listviewNews"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <FrameLayout
+                android:id="@+id/news_details_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/listviewNews">
+            </FrameLayout>
+        </RelativeLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>
